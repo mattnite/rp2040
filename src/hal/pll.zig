@@ -12,10 +12,17 @@ pub const Configuration = struct {
     postdiv2: u3,
 };
 
-pub const sys = @intToPtr(*volatile PLL, regs.PLL_SYS.base_address);
+pub const sys = PLL{
+    .cs = regs.PLL_SYS.CS,
+    .pwr = regs.PLL_SYS.PWR,
+    .fbdiv_int = regs.PLL_SYS.FVDIV_INT,
+    .prim = regs.PLL_SYS.PRIM,
+};
+
+@intToPtr(*volatile PLL, regs.PLL_SYS.base_address);
 pub const usb = @intToPtr(*volatile PLL, regs.PLL_USB.base_address);
 
-pub const PLL = packed struct {
+pub const PLL = struct {
     cs: @TypeOf(regs.PLL_SYS.CS),
     pwr: @TypeOf(regs.PLL_SYS.PWR),
     fbdiv_int: @TypeOf(regs.PLL_SYS.FBDIV_INT),
@@ -38,12 +45,12 @@ pub const PLL = packed struct {
             sys => {
                 regs.RESETS.RESET.modify(.{ .pll_sys = 1 });
                 regs.RESETS.RESET.modify(.{ .pll_sys = 0 });
-                while (regs.RESETS.RESET_DONE.read().pll_sys == 1) {}
+                while (regs.RESETS.RESET_DONE.read().pll_sys != 1) {}
             },
             usb => {
                 regs.RESETS.RESET.modify(.{ .pll_usb = 1 });
                 regs.RESETS.RESET.modify(.{ .pll_usb = 0 });
-                while (regs.RESETS.RESET_DONE.read().pll_usb == 1) {}
+                while (regs.RESETS.RESET_DONE.read().pll_usb != 1) {}
             },
             else => unreachable,
         }

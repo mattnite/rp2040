@@ -2,6 +2,11 @@ const microzig = @import("microzig");
 const regs = microzig.chip.regsisters;
 pub const gpio = @import("hal/gpio.zig");
 pub const clocks = @import("hal/clocks.zig");
+pub const sio = @import("hal/sio.zig");
+pub const time = @import("hal/time.zig");
+pub const core1 = @import("hal/core1.zig");
+pub const usb = @import("hal/usb.zig");
+pub const uart = @import("hal/uart.zig");
 
 pub const default_clock_config = clocks.GlobalConfiguration.init(.{
     //.ref = .{ .source = .src_xosc },
@@ -9,7 +14,7 @@ pub const default_clock_config = clocks.GlobalConfiguration.init(.{
         .source = .pll_sys,
         .freq = 125_000_000,
     },
-    .usb = .{ .source = .pll_usb },
+    //.usb = .{ .source = .pll_usb },
     //.adc = .{ .source = .pll_usb },
     //.rtc = .{ .source = .pll_usb },
     .peri = .{ .source = .clk_sys },
